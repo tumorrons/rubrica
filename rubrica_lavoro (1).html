@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rubrica Lavoro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1em;
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+
+        .add-form {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transform: translateY(10px);
+            opacity: 0;
+            animation: slideIn 0.6s ease forwards;
+        }
+
+        @keyframes slideIn {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #666;
+            border: 2px solid #e0e0e0;
+        }
+
+        .contacts-container {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            animation: slideIn 0.8s ease forwards;
+        }
+
+        .contact-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border-left: 4px solid #667eea;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .contact-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .contact-name {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .backup-section {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            animation: slideIn 0.4s ease forwards;
+        }
+
+        .backup-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .btn-backup {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-restore {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            color: white;
+            flex: 1;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .backup-info {
+            font-size: 0.9em;
+            color: #666;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .contact-details {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .contact-phone {
+            font-size: 1.1em;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .contact-role {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        .contact-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 20px;
+            flex: 1;
+        }
+
+        .btn-call {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+        }
+
+        .btn-edit {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .btn-delete {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .contact-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .contact-photo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #667eea;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .contact-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .contact-info {
+            flex: 1;
+        }
+
+        .photo-input-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .photo-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #667eea;
+            display: block;
+            margin: 0 auto 10px;
+        }
+
+        .photo-input {
+            display: none;
+        }
+
+        .photo-button {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .photo-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+        }
+
+        .edit-form {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1001;
+            max-width: 90%;
+            width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .toggle-form {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toggle-form:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .contact-card {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📞 Rubrica Lavoro</h1>
+            <p>I tuoi contatti di lavoro sempre a portata di mano</p>
+        </div>
+
+        <div class="backup-section">
+            <h3 style="margin-bottom: 15px; color: #333;">💾 Backup & Ripristino</h3>
+            <div class="backup-buttons">
+                <button class="btn btn-backup" onclick="exportBackup()">📤 Esporta Backup</button>
+                <button class="btn btn-restore" onclick="document.getElementById('fileInput').click()">📥 Importa Backup</button>
+            </div>
+            <input type="file" id="fileInput" class="file-input" accept=".json" onchange="importBackup(event)">
+            <div class="backup-info">
+                <strong>Totale contatti:</strong> <span id="contactCount">0</span> | 
+                <strong>Ultimo backup:</strong> <span id="lastBackup">Mai</span>
+            </div>
+        </div>
+
+        <div class="search-container">
+            <input type="text" class="search-input" id="searchInput" placeholder="🔍 Cerca per nome o ruolo...">
+        </div>
+
+        <div class="add-form hidden" id="addForm">
+            <h3 style="margin-bottom: 20px; color: #333;">Aggiungi Nuovo Contatto</h3>
+            
+            <div class="form-group" style="text-align: center;">
+                <div class="photo-input-container">
+                    <img id="addPhotoPreview" class="photo-preview hidden" alt="Anteprima foto">
+                    <button type="button" class="photo-button" onclick="document.getElementById('addPhotoInput').click()">
+                        📷 Aggiungi Foto
+                    </button>
+                    <input type="file" id="addPhotoInput" class="photo-input" accept="image/*" onchange="previewPhoto(this, 'addPhotoPreview')">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="name">Nome Completo</label>
+                <input type="text" id="name" placeholder="es. Mario Rossi">
+            </div>
+            <div class="form-group">
+                <label for="phone">Numero di Telefono</label>
+                <input type="tel" id="phone" placeholder="es. +39 123 456 7890">
+            </div>
+            <div class="form-group">
+                <label for="role">Ruolo</label>
+                <input type="text" id="role" placeholder="es. Responsabile Vendite">
+            </div>
+            <button class="btn btn-primary" onclick="addContact()">Aggiungi Contatto</button>
+            <button class="btn btn-secondary" onclick="toggleForm()">Annulla</button>
+        </div>
+
+        <div class="modal-overlay hidden" id="editOverlay"></div>
+        <div class="edit-form hidden" id="editForm">
+            <h3 style="margin-bottom: 20px; color: #333;">Modifica Contatto</h3>
+            
+            <div class="form-group" style="text-align: center;">
+                <div class="photo-input-container">
+                    <img id="editPhotoPreview" class="photo-preview hidden" alt="Anteprima foto">
+                    <button type="button" class="photo-button" onclick="document.getElementById('editPhotoInput').click()">
+                        📷 Cambia Foto
+                    </button>
+                    <input type="file" id="editPhotoInput" class="photo-input" accept="image/*" onchange="previewPhoto(this, 'editPhotoPreview')">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="editName">Nome Completo</label>
+                <input type="text" id="editName" placeholder="es. Mario Rossi">
+            </div>
+            <div class="form-group">
+                <label for="editPhone">Numero di Telefono</label>
+                <input type="tel" id="editPhone" placeholder="es. +39 123 456 7890">
+            </div>
+            <div class="form-group">
+                <label for="editRole">Ruolo</label>
+                <input type="text" id="editRole" placeholder="es. Responsabile Vendite">
+            </div>
+            <button class="btn btn-primary" onclick="saveEdit()">Salva Modifiche</button>
+            <button class="btn btn-secondary" onclick="closeEditForm()">Annulla</button>
+        </div>
+
+        <div class="contacts-container">
+            <div id="contactsList"></div>
+            <div class="empty-state hidden" id="emptyState">
+                <h3>Nessun contatto trovato</h3>
+                <p>Inizia aggiungendo i tuoi colleghi di lavoro</p>
+            </div>
+        </div>
+
+        <button class="toggle-form" onclick="toggleForm()">
+            <span id="toggleIcon">+</span>
+        </button>
+    </div>
+
+    <script>
+        // Gestione contatti
+        let contacts = JSON.parse(localStorage.getItem('workContacts')) || [];
+
+        function saveContacts() {
+            localStorage.setItem('workContacts', JSON.stringify(contacts));
+        }
+
+        function addContact() {
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const role = document.getElementById('role').value.trim();
+            const photoPreview = document.getElementById('addPhotoPreview');
+            const photo = photoPreview.classList.contains('hidden') ? null : photoPreview.src;
+
+            if (!name || !phone) {
+                alert('Nome e telefono sono obbligatori!');
+                return;
+            }
+
+            const contact = {
+                id: Date.now(),
+                name,
+                phone,
+                role,
+                photo,
+                createdAt: new Date().toISOString()
+            };
+
+            contacts.push(contact);
+            saveContacts();
+            renderContacts();
+            toggleForm();
+            clearForm();
+            updateBackupInfo();
+        }
+
+        function deleteContact(id) {
+            if (confirm('Sei sicuro di voler eliminare questo contatto?')) {
+                contacts = contacts.filter(contact => contact.id !== id);
+                saveContacts();
+                renderContacts();
+                updateBackupInfo();
+            }
+        }
+
+        function callContact(phone) {
+            window.location.href = `tel:${phone}`;
+        }
+
+        function clearForm() {
+            document.getElementById('name').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('role').value = '';
+            document.getElementById('addPhotoPreview').classList.add('hidden');
+            document.getElementById('addPhotoInput').value = '';
+        }
+
+        // Funzioni per la gestione delle foto
+        function previewPhoto(input, previewId) {
+            const preview = document.getElementById(previewId);
+            const file = input.files[0];
+            
+            if (file) {
+                // Verifica dimensione file (max 1MB)
+                if (file.size > 1024 * 1024) {
+                    alert('La foto deve essere inferiore a 1MB');
+                    input.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Funzioni per la modifica
+        let editingContactId = null;
+
+        function editContact(id) {
+            const contact = contacts.find(c => c.id === id);
+            if (!contact) return;
+
+            editingContactId = id;
+            
+            document.getElementById('editName').value = contact.name;
+            document.getElementById('editPhone').value = contact.phone;
+            document.getElementById('editRole').value = contact.role || '';
+            
+            const editPhotoPreview = document.getElementById('editPhotoPreview');
+            if (contact.photo) {
+                editPhotoPreview.src = contact.photo;
+                editPhotoPreview.classList.remove('hidden');
+            } else {
+                editPhotoPreview.classList.add('hidden');
+            }
+            
+            document.getElementById('editOverlay').classList.remove('hidden');
+            document.getElementById('editForm').classList.remove('hidden');
+        }
+
+        function saveEdit() {
+            if (!editingContactId) return;
+
+            const name = document.getElementById('editName').value.trim();
+            const phone = document.getElementById('editPhone').value.trim();
+            const role = document.getElementById('editRole').value.trim();
+            const photoPreview = document.getElementById('editPhotoPreview');
+            const photo = photoPreview.classList.contains('hidden') ? null : photoPreview.src;
+
+            if (!name || !phone) {
+                alert('Nome e telefono sono obbligatori!');
+                return;
+            }
+
+            const contactIndex = contacts.findIndex(c => c.id === editingContactId);
+            if (contactIndex !== -1) {
+                contacts[contactIndex] = {
+                    ...contacts[contactIndex],
+                    name,
+                    phone,
+                    role,
+                    photo,
+                    updatedAt: new Date().toISOString()
+                };
+                
+                saveContacts();
+                renderContacts();
+                closeEditForm();
+                updateBackupInfo();
+            }
+        }
+
+        function closeEditForm() {
+            document.getElementById('editOverlay').classList.add('hidden');
+            document.getElementById('editForm').classList.add('hidden');
+            document.getElementById('editPhotoPreview').classList.add('hidden');
+            document.getElementById('editPhotoInput').value = '';
+            editingContactId = null;
+        }
+
+        // Chiudi modal cliccando sull'overlay
+        document.getElementById('editOverlay').addEventListener('click', closeEditForm);
+
+        // Funzioni di backup
+        function exportBackup() {
+            const backupData = {
+                contacts: contacts,
+                exportDate: new Date().toISOString(),
+                version: "1.0"
+            };
+
+            const dataStr = JSON.stringify(backupData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `rubrica_backup_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+
+            // Salva data ultimo backup
+            localStorage.setItem('lastBackup', new Date().toISOString());
+            updateBackupInfo();
+        }
+
+        function importBackup(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const backupData = JSON.parse(e.target.result);
+                    
+                    // Verifica formato backup
+                    if (!backupData.contacts || !Array.isArray(backupData.contacts)) {
+                        alert('File di backup non valido!');
+                        return;
+                    }
+
+                    // Conferma import
+                    const importCount = backupData.contacts.length;
+                    const currentCount = contacts.length;
+                    
+                    if (currentCount > 0) {
+                        if (!confirm(`Questo sostituirà i tuoi ${currentCount} contatti attuali con ${importCount} contatti dal backup. Continuare?`)) {
+                            return;
+                        }
+                    }
+
+                    // Importa contatti
+                    contacts = backupData.contacts;
+                    saveContacts();
+                    renderContacts();
+                    updateBackupInfo();
+                    
+                    alert(`Backup importato con successo! ${importCount} contatti caricati.`);
+                } catch (error) {
+                    alert('Errore nel leggere il file di backup!');
+                }
+            };
+            reader.readAsText(file);
+            
+            // Reset input
+            event.target.value = '';
+        }
+
+        function updateBackupInfo() {
+            document.getElementById('contactCount').textContent = contacts.length;
+            
+            const lastBackup = localStorage.getItem('lastBackup');
+            if (lastBackup) {
+                const date = new Date(lastBackup);
+                document.getElementById('lastBackup').textContent = date.toLocaleString('it-IT');
+            }
+        }
+
+        function toggleForm() {
+            const form = document.getElementById('addForm');
+            const icon = document.getElementById('toggleIcon');
+            
+            if (form.classList.contains('hidden')) {
+                form.classList.remove('hidden');
+                icon.textContent = '×';
+                icon.style.fontSize = '30px';
+            } else {
+                form.classList.add('hidden');
+                icon.textContent = '+';
+                icon.style.fontSize = '24px';
+                clearForm();
+            }
+        }
+
+        function renderContacts(filteredContacts = null) {
+            const contactsList = document.getElementById('contactsList');
+            const emptyState = document.getElementById('emptyState');
+            const contactsToShow = filteredContacts || contacts;
+
+            if (contactsToShow.length === 0) {
+                contactsList.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+
+            const sortedContacts = contactsToShow.sort((a, b) => 
+                a.name.localeCompare(b.name, 'it', { sensitivity: 'base' })
+            );
+
+            contactsList.innerHTML = sortedContacts.map(contact => `
+                <div class="contact-card">
+                    <div class="contact-header">
+                        ${contact.photo ? `<img src="${contact.photo}" alt="${contact.name}" class="contact-photo">` : ''}
+                        <div class="contact-info">
+                            <div class="contact-name">${contact.name}</div>
+                            <div class="contact-phone">${contact.phone}</div>
+                            ${contact.role ? `<div class="contact-role">${contact.role}</div>` : ''}
+                        </div>
+                    </div>
+                    <div class="contact-actions">
+                        <button class="btn btn-small btn-call" onclick="callContact('${contact.phone}')">
+                            📞 Chiama
+                        </button>
+                        <button class="btn btn-small btn-edit" onclick="editContact(${contact.id})">
+                            ✏️ Modifica
+                        </button>
+                        <button class="btn btn-small btn-delete" onclick="deleteContact(${contact.id})">
+                            🗑️ Elimina
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Ricerca
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            if (searchTerm === '') {
+                renderContacts();
+                return;
+            }
+
+            const filteredContacts = contacts.filter(contact =>
+                contact.name.toLowerCase().includes(searchTerm) ||
+                contact.phone.includes(searchTerm) ||
+                contact.role.toLowerCase().includes(searchTerm)
+            );
+
+            renderContacts(filteredContacts);
+        });
+
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            renderContacts();
+            updateBackupInfo();
+        });
+
+        // Gestione form con Enter
+        document.getElementById('addForm').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') {
+                e.preventDefault();
+                addContact();
+            }
+        });
+
+        document.getElementById('editForm').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') {
+                e.preventDefault();
+                saveEdit();
+            }
+        });
+
+        // Gestione tasto Escape per chiudere modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeEditForm();
+            }
+        });
+    </script>
+</body>
+</html>
